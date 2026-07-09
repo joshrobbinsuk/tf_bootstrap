@@ -41,21 +41,3 @@ variable "provider_id" {
   type        = string
   default     = "github-provider"
 }
-
-# Broad-but-pragmatic set so the deployer can apply the whole app stack
-# (Cloud Run + Artifact Registry + Scheduler + Secret Manager + a runtime SA).
-# Tighten later if you want least-privilege per-resource.
-variable "deployer_roles" {
-  description = "Project roles granted to the CI deployer SA"
-  type        = list(string)
-  default = [
-    "roles/run.admin",
-    "roles/artifactregistry.admin",
-    "roles/cloudscheduler.admin",
-    "roles/secretmanager.admin",
-    "roles/iam.serviceAccountAdmin",
-    "roles/iam.serviceAccountUser",
-    "roles/storage.admin",
-    "roles/serviceusage.serviceUsageAdmin",
-  ]
-}

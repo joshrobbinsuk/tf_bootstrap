@@ -52,8 +52,11 @@ earlier (enablement can lag), just re-run `terraform apply` — it's idempotent.
 
 ## Notes
 
-- `deployer_roles` is a broad-but-pragmatic set so the deployer can apply the
-  whole app stack. Tighten toward least-privilege later if desired.
+- The bootstrap is **app-agnostic** — it provisions only a state backend and a
+  CI identity, nothing about any particular app. The deployer SA gets exactly
+  one grant here: `objectAdmin` on the state bucket. The roles it needs to
+  provision an app (Cloud Run, Scheduler, Secret Manager, …) are that app
+  stack's concern, granted there — not baked in here.
 - WIF is restricted by `attribute_condition` to the single repo
   `joshrobbinsuk/brokelads_cloud` **and** the deploy branch (`allowed_ref`,
   default `refs/heads/dev`) — no other repo, branch, or PR workflow can assume

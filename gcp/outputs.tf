@@ -24,12 +24,12 @@ output "github_actions_auth" {
 }
 
 output "backend_config" {
-  description = "backend block for the GCP app stacks (one prefix per env)"
+  description = "backend block template for consuming stacks (one prefix per app/env)"
   value       = <<-EOT
     terraform {
       backend "gcs" {
         bucket = "${google_storage_bucket.terraform_state.name}"
-        prefix = "brokelads/ENV"
+        prefix = "<app>/<env>"
       }
     }
   EOT

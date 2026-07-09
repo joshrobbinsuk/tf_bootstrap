@@ -67,11 +67,14 @@ resource "google_service_account" "deployer" {
   depends_on = [google_project_service.enabled]
 }
 
-resource "google_project_iam_member" "deployer_roles" {
-  for_each = toset(var.deployer_roles)
-  project  = var.project_id
-  role     = each.value
-  member   = "serviceAccount:${google_service_account.deployer.email}"
+# The deployer's ONLY bootstrap-scoped grant: read/write the Terraform state
+# bucket (a bootstrap resource, needed by any Terraform deploy, app-agnostic).
+# What it may actually provision — Cloud Run, Scheduler, Secret Manager, etc. —
+# is the app stack's concern and is granted there, so this stays generic.
+resource "google_storage_bucket_iam_member" "deployer_state" {
+  bucket = google_storage_bucket.terraform_state.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.deployer.email}"
 }
 
 resource "google_iam_workload_identity_pool" "github" {
