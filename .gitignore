@@ -1,2 +1,5 @@
 .terraform
 *.tfvars 
+# transient terraform files
+*.tfstate.lock.info
+*.tfstate.backup
