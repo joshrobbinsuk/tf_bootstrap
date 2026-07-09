@@ -67,14 +67,16 @@ resource "google_service_account" "deployer" {
   depends_on = [google_project_service.enabled]
 }
 
-# The deployer's ONLY bootstrap-scoped grant: read/write the Terraform state
-# bucket (a bootstrap resource, needed by any Terraform deploy, app-agnostic).
-# What it may actually provision — Cloud Run, Scheduler, Secret Manager, etc. —
-# is the app stack's concern and is granted there, so this stays generic.
-resource "google_storage_bucket_iam_member" "deployer_state" {
-  bucket = google_storage_bucket.terraform_state.name
-  role   = "roles/storage.objectAdmin"
-  member = "serviceAccount:${google_service_account.deployer.email}"
+# The deployer's provisioning power: a single GENERIC project role — not an
+# app-specific one — so the CI identity can stand up any app stack itself, the
+# same way the AWS side runs CI as a full admin. `editor` is broad-but-not-owner
+# (no project-IAM / billing / project-delete); dial to `roles/owner` only if a
+# stack needs to set project-level IAM. Keyless WIF + branch-pinning already make
+# this safer than the AWS static admin key. (editor includes state-bucket access.)
+resource "google_project_iam_member" "deployer" {
+  project = var.project_id
+  role    = var.deployer_role
+  member  = "serviceAccount:${google_service_account.deployer.email}"
 }
 
 resource "google_iam_workload_identity_pool" "github" {

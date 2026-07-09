@@ -41,3 +41,13 @@ variable "provider_id" {
   type        = string
   default     = "github-provider"
 }
+
+# Generic (not app-specific) project role for the CI deployer, so it can
+# provision app stacks itself. editor = broad-but-not-owner (no project IAM,
+# billing, or project deletion). Bump to roles/owner only if a stack must set
+# project-level IAM; tighten below editor for least-privilege later.
+variable "deployer_role" {
+  description = "Generic project role granted to the CI deployer SA"
+  type        = string
+  default     = "roles/editor"
+}
