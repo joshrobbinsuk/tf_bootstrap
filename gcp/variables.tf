@@ -43,11 +43,13 @@ variable "provider_id" {
 }
 
 # Generic (not app-specific) project role for the CI deployer, so it can
-# provision app stacks itself. editor = broad-but-not-owner (no project IAM,
-# billing, or project deletion). Bump to roles/owner only if a stack must set
-# project-level IAM; tighten below editor for least-privilege later.
+# provision app stacks itself. Defaults to owner because a typical app stack sets
+# RESOURCE-level IAM (a public Cloud Run invoker binding, granting a runtime SA
+# access to secrets) and roles/editor CANNOT set IAM policy of any kind. Drop to
+# roles/editor for apps that never touch IAM. Either way it's keyless (WIF) +
+# branch-pinned, so safer than the AWS static admin key.
 variable "deployer_role" {
   description = "Generic project role granted to the CI deployer SA"
   type        = string
-  default     = "roles/editor"
+  default     = "roles/owner"
 }

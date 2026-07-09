@@ -54,11 +54,13 @@ earlier (enablement can lag), just re-run `terraform apply` — it's idempotent.
 
 - The bootstrap is **app-agnostic** — it provisions only a state backend and a
   CI identity, nothing about any particular app. The deployer SA gets one
-  **generic** project role (`deployer_role`, default `roles/editor`) so it can
+  **generic** project role (`deployer_role`, default `roles/owner`) so it can
   stand up app stacks itself — the same way the AWS side runs CI as an admin,
-  but keyless (WIF) and branch-pinned. It's generic, not app-specific
-  (`run.admin` and friends never leak in here). Dial to `roles/owner` if a stack
-  needs project-level IAM, or tighten below `editor` for least-privilege later.
+  but keyless (WIF) and branch-pinned. Owner is the default because a typical app
+  stack sets resource-level IAM (public Cloud Run invoker, runtime-SA secret
+  access) and `roles/editor` can't set IAM policy at all. It's generic, not
+  app-specific (`run.admin` and friends never leak in here). Drop to
+  `roles/editor` for an app that never touches IAM.
 - WIF is restricted by `attribute_condition` to the single repo
   `joshrobbinsuk/brokelads_cloud` **and** the deploy branch (`allowed_ref`,
   default `refs/heads/dev`) — no other repo, branch, or PR workflow can assume

@@ -69,10 +69,10 @@ resource "google_service_account" "deployer" {
 
 # The deployer's provisioning power: a single GENERIC project role — not an
 # app-specific one — so the CI identity can stand up any app stack itself, the
-# same way the AWS side runs CI as a full admin. `editor` is broad-but-not-owner
-# (no project-IAM / billing / project-delete); dial to `roles/owner` only if a
-# stack needs to set project-level IAM. Keyless WIF + branch-pinning already make
-# this safer than the AWS static admin key. (editor includes state-bucket access.)
+# same way the AWS side runs CI as a full admin. Defaults to owner because a
+# typical app stack sets resource-level IAM (a public Cloud Run invoker binding,
+# granting a runtime SA access to secrets) and roles/editor cannot set IAM policy
+# at all. Keyless WIF + branch-pinning keep this safer than the AWS static key.
 resource "google_project_iam_member" "deployer" {
   project = var.project_id
   role    = var.deployer_role
