@@ -13,16 +13,15 @@ provider "google" {
   region  = var.region
 }
 
-# APIs the project needs. The bootstrap's OWN prerequisites
-# (cloudresourcemanager + serviceusage) must be enabled by hand before the
-# first apply — see README. These enable the rest for the app stack.
+# APIs the BOOTSTRAP's OWN resources need — the state bucket (storage) and WIF
+# (iam/iamcredentials/sts). Nothing else: the bootstrap stays app-agnostic, so
+# the app's APIs (Cloud Run, Artifact Registry, Scheduler, Secret Manager) are
+# the app stack's concern, enabled there next to the resources that use them.
+# cloudresourcemanager + serviceusage are manual pre-reqs (see README) — TF needs
+# them on to manage anything, including these.
 locals {
   services = [
     "storage.googleapis.com",
-    "run.googleapis.com",
-    "artifactregistry.googleapis.com",
-    "cloudscheduler.googleapis.com",
-    "secretmanager.googleapis.com",
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
     "sts.googleapis.com",
