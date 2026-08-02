@@ -49,6 +49,14 @@ resource "google_storage_bucket" "terraform_state" {
   }
 }
 
+# CI identities that keep their stack's state here. Owner credentials (Josh,
+# local applies) need no grant; service accounts do.
+resource "google_storage_bucket_iam_member" "brokelads_deployer" {
+  bucket = google_storage_bucket.terraform_state.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:gh-actions-deployer@526938691325.iam.gserviceaccount.com"
+}
+
 # Belt to the prevent_destroy braces: the lien makes even a console/gcloud
 # project deletion a deliberate two-step.
 resource "google_resource_manager_lien" "keep" {
