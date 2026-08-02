@@ -36,7 +36,7 @@ resource "google_project_service" "enabled" {
 
 # Terraform state bucket — the GCS analogue of the AWS S3 state bucket.
 # The per-project state bucket this stack used to create was retired 2026-08-02:
-# state for all stacks now lives in the shared bucket managed by state-seed/.
+# state for all stacks now lives in the shared bucket managed by gcp/state.
 
 # Keyless CI auth: GitHub Actions OIDC -> Workload Identity Federation ->
 # impersonate the deployer service account. No static key is ever stored.

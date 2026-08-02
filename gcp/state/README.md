@@ -1,4 +1,4 @@
-# state-seed
+# gcp/state
 
 The dedicated home of terraform state: project `joshrobbinsuk-tf-state`, bucket
 `gs://joshrobbinsuk-tf-state` (versioned, public-access prevented, deletion lien,
@@ -36,6 +36,6 @@ liens).
 
 State previously lived in `gs://526938691325-terraform-state` inside the brokelads
 project — one stack holding the state of all the others. All consumers migrated out
-2026-08-02, and the old bucket was destroyed the same day via `tf_bootstrap/gcp`
+2026-08-02, and the old bucket was destroyed the same day via `tf_bootstrap/gcp/identities`
 (force_destroy flipped in one apply, resource removed in the next). That stack keeps
 the brokelads WIF pool and deployer SA, which stay for as long as brokelads does.

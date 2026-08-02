@@ -1,18 +1,22 @@
-# GCP Terraform Bootstrap
+# gcp/identities — per-app CI identities
 
-The GCP counterpart to the AWS bootstrap in the repo root. Creates the
-foundational infrastructure the BrokeLads GCP app stacks depend on:
+One instance per app that runs terraform from CI. Human-applied (CI cannot
+create the credentials it logs in with); the app repo's own stack is then fully
+CI-driven — plan on PR, apply on merge. Terraform state for apps lives in the
+shared bucket owned by `gcp/state`, which also grants each deployer its bucket
+access.
 
-- **GCS bucket** for Terraform state (versioned) — the analogue of the AWS S3
-  state bucket. The GCS backend locks state natively, so there is **no**
-  DynamoDB-equivalent lock table.
-- **Workload Identity Federation** — a pool + GitHub OIDC provider + a deployer
-  service account, so GitHub Actions deploys **keylessly** (no stored
-  credential — an upgrade over the AWS side's static access key).
+Per app this provides **Workload Identity Federation** — a pool + GitHub OIDC
+provider + a deployer service account pinned to one repo and branch, so GitHub
+Actions deploys **keylessly** (no stored credential — an upgrade over the AWS
+side's static access key).
+
+Currently instantiated for **brokelads** (values in `terraform.tfvars`); the
+next app generalises this from one hardcoded instance to a block per app.
 
 Like the AWS root, this uses **local state** and is **applied once, by hand** —
-it's the bootstrap, so it can't store its own state in the bucket it creates.
-This is the one sanctioned exception to "provision only via CI".
+it's the identity floor, so CI can't be what provisions it. This is the one
+sanctioned exception to "provision only via CI".
 
 ## Prerequisites
 

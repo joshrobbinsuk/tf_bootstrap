@@ -23,7 +23,7 @@ output "backend_config" {
   value       = <<-EOT
     terraform {
       backend "gcs" {
-        bucket = "joshrobbinsuk-tf-state" # shared bucket, managed by state-seed/
+        bucket = "joshrobbinsuk-tf-state" # shared bucket, managed by gcp/state
         prefix = "<app>/<env>"
       }
     }
