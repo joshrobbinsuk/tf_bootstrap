@@ -1,8 +1,3 @@
-output "state_bucket_name" {
-  description = "GCS bucket for Terraform state — use in the app stack's backend \"gcs\" block"
-  value       = google_storage_bucket.terraform_state.name
-}
-
 output "deployer_service_account_email" {
   description = "CI deployer SA — the app stack's GitHub Actions impersonates this"
   value       = google_service_account.deployer.email
@@ -28,7 +23,7 @@ output "backend_config" {
   value       = <<-EOT
     terraform {
       backend "gcs" {
-        bucket = "${google_storage_bucket.terraform_state.name}"
+        bucket = "joshrobbinsuk-tf-state" # shared bucket, managed by state-seed/
         prefix = "<app>/<env>"
       }
     }

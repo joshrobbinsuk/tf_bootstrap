@@ -35,28 +35,8 @@ resource "google_project_service" "enabled" {
 }
 
 # Terraform state bucket — the GCS analogue of the AWS S3 state bucket.
-# The GCS backend does state locking natively, so there is no DynamoDB
-# equivalent to create. Bucket names are global; the project id (also global)
-# keeps it unique.
-resource "google_storage_bucket" "terraform_state" {
-  name                        = "${var.project_id}-terraform-state"
-  location                    = var.region
-  force_destroy               = false
-  uniform_bucket_level_access = true
-  public_access_prevention    = "enforced"
-
-  versioning {
-    enabled = true
-  }
-
-  # State is precious — block a stray `terraform destroy` from tearing the
-  # bucket down. Remove deliberately if you ever really need to delete it.
-  lifecycle {
-    prevent_destroy = true
-  }
-
-  depends_on = [google_project_service.enabled]
-}
+# The per-project state bucket this stack used to create was retired 2026-08-02:
+# state for all stacks now lives in the shared bucket managed by state-seed/.
 
 # Keyless CI auth: GitHub Actions OIDC -> Workload Identity Federation ->
 # impersonate the deployer service account. No static key is ever stored.

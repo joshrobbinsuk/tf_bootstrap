@@ -35,12 +35,7 @@ liens).
 ## History
 
 State previously lived in `gs://526938691325-terraform-state` inside the brokelads
-project — a retired-ish stack holding the state of living ones, one project-deletion
-away from orphaning everything. All consumers migrated out 2026-08-02; both objects
-left in the old bucket are stale copies.
-
-The old bucket is owned by `tf_bootstrap/gcp`, which also owns the brokelads WIF
-pool and deployer SA (still live in brokelads CI). Correct removal of the bucket
-alone: delete the `google_storage_bucket.terraform_state` resource (and its
-`prevent_destroy`) from `tf_bootstrap/gcp` and apply — pending Josh's sign-off. The
-WIF pool and deployer stay for as long as brokelads does.
+project — one stack holding the state of all the others. All consumers migrated out
+2026-08-02, and the old bucket was destroyed the same day via `tf_bootstrap/gcp`
+(force_destroy flipped in one apply, resource removed in the next). That stack keeps
+the brokelads WIF pool and deployer SA, which stay for as long as brokelads does.
